@@ -14,5 +14,5 @@ con = psycopg2.connect(
 )
 
 
-# close connectio                                       n
+# close connection
 con.close()
