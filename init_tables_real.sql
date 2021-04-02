@@ -15,8 +15,8 @@ create table works_under(manager_SIN varchar(20),employee_sin varchar(20));
 
 create table employee(employee_sin varchar(20) primary key, first_name varchar(13),last_name varchar(13),
 					 home_address address);
-					 
-create table room(room_num varchar(15) primary key,price numeric(7,2),has_tv bool, has_ac bool,
+	 
+create table room(room_num varchar(15) primary key, is_booked bool,price numeric(7,2),has_tv bool, has_ac bool,
 				 room_cap int, room_view varchar(15), can_extend bool,
 				 constraint price_check check(price > 0.00));
 
