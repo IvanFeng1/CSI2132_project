@@ -3,7 +3,6 @@ f = open("cred.txt","r")
 uname = f.readline()
 upass = f.readline()
 uname = uname[0:len(uname)-1]
-upass = upass[0:len(upass)-1]
 # connect to db
 con = psycopg2.connect(
     host = "web0.eecs.uottawa.ca",
