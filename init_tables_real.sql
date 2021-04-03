@@ -33,7 +33,7 @@ create table renting(room_num varchar(15),check_in_date date, stay_duration_days
 					foreign key(room_num) references room(room_num),
 					constraint stay_duration_check check (stay_duration_days > 0),
 					constraint num_ppl_check check (num_ppl > 0));
-create table customer (sin varchar(15) primary key,first_name varchar(13),laset_name varchar(13), 
+create table customer (sin varchar(15) primary key,first_name varchar(13),last_name varchar(13), 
 					  customer_address address, registration_date date);
 create type address as (
 	street_num int,

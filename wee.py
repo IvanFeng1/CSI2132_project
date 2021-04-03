@@ -52,7 +52,7 @@ def cSearch(): #this will later take as input the date n stuff. db as is now is 
             x1 = "*"
         x2 = input("Before/Exactly/After (B/E/A): \n")
         x3 = input("Date: (YY-MM-DD)\n")
-        cursor.execute("SELECT room_num FROM \"Project\".room") #join room to 
+        cursor.execute("SELECT * FROM \"Project\".hotel") #join room to 
         print("| Avaliable Rooms by Number:         |")
         printQuery(cursor.fetchall())
 
