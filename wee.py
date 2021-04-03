@@ -14,18 +14,6 @@ con = psycopg2.connect(
 
 cursor = con.cursor()
 
-def printQuery(z, n=10):
-    if len(z) < n:
-        n = len(z)
-    print("+-----------+")
-    for i in range(n):
-        x = z[i]
-        for y in x: 
-            print("+ "+str(y))
-        print("+-----------+")
-    
-
-
 
 def title(): #main menu. admin and employee should prolly get prompted for passwords n stuff
     title= "+------------------------------------+\n|                                    |\n|                                    |\n|                                    |\n|                                    |\n| [A]: Customer                      |\n| [B]: Employee                      |\n| [C]: Admin                         |\n|                                    |\n|                                    |\n+------------------------------------+"
@@ -38,30 +26,34 @@ def title(): #main menu. admin and employee should prolly get prompted for passw
     elif x == "C":
         admin()
 
-def cSearch(): #this will later take as input the date n stuff. db as is now is empty so idk what to do with them
-        cursor.execute("SELECT * FROM \"Project\".room WHERE \"Project\".room.is_booked = FALSE") #join room to 
-        print("| Available Rooms by Number:         |")
-        z = cursor.fetchall()
+def cSearch():
         n=10
         l=0
         loop = True
         print("+-----------+")
         while loop:
+            cursor.execute("SELECT * FROM \"Project\".room WHERE \"Project\".room.is_booked = FALSE") #join room to 
+            print("| Available Rooms by Number:         |")
+            z = cursor.fetchall()
             if len(z) < n+l:
                 n = len(z)
             for i in range(l,n+l):
-                x = [z[i][0],z[i][2]]
-                print("Room Number: "+str(x[0]))
-                print("Price: $"+str(x[1]))
-                print("+-----------+")
-            print("For more information on a room, enter its room number. to see more rooms, press E. To go back, press Q")
+                try:
+                    x = [z[i][0],z[i][2]]
+                    print("Room Number: "+str(x[0]))
+                    print("Price: $"+str(x[1]))
+                    print("+-----------+")
+                except:
+                    print('',end='')
+            print("For more information on a room, enter its room number. to see more rooms, press E. To go back, press Q. To Exit, press X")
             inp = input("[ ]: ")
             if inp == "E":
                 l += 10
             elif inp == "Q":
                 l -= 10
+            elif inp == "X":
+                customer()
             else:
-                room = int(inp)
                 cursor.execute("SELECT * FROM \"Project\".room WHERE \"Project\".room.room_num = \'"+inp+"\'")
                 g = cursor.fetchall()
                 print("Room Number: "+str(g[0][0]))
@@ -101,12 +93,15 @@ def customer():
     print("+--------------------------+")
     print("1: Search Available Rooms")
     print("2: Book a Room")
+    print("3: Exit")
     print("+--------------------------+")
     x = input("[ ]:")
     if x == "1":
         cSearch() 
     elif x == "2":
         cBook()
+    elif x == "3":
+        exit()
 
 def toRenting():
     n = input("Enter Room Number:\n[ ]: " )
@@ -124,13 +119,19 @@ def toRenting():
 def newRent():
     n = input("Enter Room Number:\n[ ]: " )
     j = input("Credit Card Number:\n[ ]: ")
+    nam = input("Name:\n[ ]: ")
+    dur = input("Duration:\n[ ]: ")
+    chk = input("When will you check in?: (YYYY-MM-DD)\n")
     cursor.execute("SELECT * FROM \"Project\".room WHERE \"Project\".room.room_num = \'"+n+"\'")
     data = cursor.fetchall()[0]
-    chk = data[1]
-    dur = data[2]
-    occ = data[3]
-    nam = data[4]
-    cursor.execute("INSERT INTO \"Project\".renting (room_num,check_in_date,stay_duration_days,num_ppl,occupant) VALUES ("+str(n)+",\'"+str(chk)+"\',"+str(dur)+","+str(occ)+",\'"+nam+"\') ")
+    print(data)
+    occ = data[5]
+    if data[1] == False:
+        cursor.execute("INSERT INTO \"Project\".renting (room_num,check_in_date,stay_duration_days,num_ppl,occupant) VALUES ("+str(n)+",\'"+str(chk)+"\',"+str(dur)+","+str(occ)+",\'"+nam+"\') ")
+        cursor.execute("UPDATE \"Project\".room SET is_booked = true WHERE \"Project\".room.room_num = \'"+n+"\'")
+        con.commit()
+    else:
+        print("This room is unavailable")
     #con.commit()
     employee()
 
@@ -164,8 +165,21 @@ def employee():
 
 def admin():
     while True:
-        cursor.execute(input()) #try-catch statement here
-        print(cursor.fetchall())
+        inp = input("[Q]: ")
+        if inp == "X":
+            exit()
+        else:
+            try:
+                cursor.execute(inp) #read eval print loop :3
+            except:
+                print("Try again!")
+            try:
+                g = cursor.fetchall()
+                print(g)
+            except:
+                print("---")
+        
+        #print(cursor.fetchall())
 
 
 
