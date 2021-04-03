@@ -156,7 +156,7 @@ def employee():
             print(n[0])
         employee()
     elif z == "4":
-        
+        newRent()
         #print(cursor.fetchall())
     
     
